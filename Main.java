@@ -2,6 +2,36 @@ public class Main
 {
     public static void main(String[] args)
     {
+        /*AvlTree<Integer> tree = new AvlTree<>();
+
+        tree.root = tree.insert(tree.root, 4);
+        System.out.println(tree.root.data);
+        tree.root = tree.insert(tree.root, 3);
+        System.out.println(tree.root.data);
+        tree.root = tree.insert(tree.root, 5);
+        System.out.println(tree.root.data);
+        tree.root = tree.insert(tree.root, 2);
+        System.out.println(tree.root.data);
+        tree.root = tree.insert(tree.root, 1);
+        System.out.println(tree.root.data);*/
+        /*tree.root = tree.insert(tree.root, 5);
+        tree.root = tree.insert(tree.root, 7);
+        tree.root = tree.insert(tree.root, 8);
+        tree.root = tree.insert(tree.root, 9);
+
+
+        System.out.println(tree.root.data + " " + tree.root.height);*/
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
         AvlTree<Integer> tree = new AvlTree<>();
 
         // Constructing tree given in the above figure
@@ -39,7 +69,7 @@ public class Main
 
         //        threaded Avl tree
 
-        ThreadedAvlTree<Integer> threadedAvlTree = new ThreadedAvlTree<>();
+        /*ThreadedAvlTree<Integer> threadedAvlTree = new ThreadedAvlTree<>();
         threadedAvlTree.convertAVLtoThreaded(tree.root);
 
         System.out.println("Inorder traversal" +
@@ -61,7 +91,7 @@ public class Main
         System.out.println("Inorder traversal" +
                 " of constructed threaded avl tree is : ");
         threadedAvlTree.print(threadedAvlTree.root);
-        System.out.println("\nTree Height is: " + threadedAvlTree.getHeight(threadedAvlTree.root));
+        System.out.println("\nTree Height is: " + threadedAvlTree.getHeight(threadedAvlTree.root));*/
     }
 }
 

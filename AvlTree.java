@@ -1,5 +1,3 @@
-import javax.lang.model.util.ElementScanner14;
-
 public class AvlTree<T extends Comparable<T>>
 {
     public Node<T> root;
@@ -41,49 +39,20 @@ public class AvlTree<T extends Comparable<T>>
             }
             else
             {
-                return root;
+                return node;
             }
         }
 
-        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        updateHeight(node);
 
-        int balanceFactor = getBalanceFactor(node);
-
-        if (balanceFactor > 1 && data.compareTo(node.left.data) < 0)
-        {
-            return rightRotate(node);
-        }
-        else if (balanceFactor < -1 && data.compareTo(node.right.data) > 0)
-        {
-            return leftRotate(node);
-        }
-        else if (balanceFactor > 1 && data.compareTo(node.left.data) > 0)
-        {
-            node.left = leftRotate(node.left);
-
-            return rightRotate(node);
-        }
-        else if (balanceFactor < -1 && data.compareTo(node.right.data) < 0)
-        {
-            node.right = rightRotate(node.right);
-
-            return leftRotate(node);
-        }
-
-        return node;
+        return rotateNodes(node);
     }
-
-
-    /**
-     * Remove / Delete the node based on the given data
-     * Return the node / root if the data do not exist
-     */
 
     Node<T> removeNode(Node<T> node, T data)
     {
         if (node == null)
         {
-            return node;
+            return null;
         }
         else if (data.compareTo(node.data) < 0)
         {
@@ -111,40 +80,9 @@ public class AvlTree<T extends Comparable<T>>
             }
         }
 
-        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        updateHeight(node);
 
-        int balanceFactor = getBalanceFactor(node);
-
-        if (balanceFactor > 1 && getBalanceFactor(node.left) >= 0)
-        {
-            return rightRotate(node);
-        }
-        else if (balanceFactor < -1 && getBalanceFactor(node.right) <= 0)
-        {
-            return leftRotate(node);
-        }
-        else if (balanceFactor > 1 && getBalanceFactor(node.left) < 0)
-        {
-            node.left = leftRotate(node.left);
-            return rightRotate(node);
-        }
-        else if (balanceFactor < -1 && getBalanceFactor(node.right) > 0)
-        {
-            node.right = rightRotate(node.right);
-            return leftRotate(node);
-        }
-
-        return node;
-    }
-
-    int getHeight(Node<T> N)
-    {
-        if (N == null)
-        {
-            return 0;
-        }
-
-        return N.height;
+        return rotateNodes(node);
     }
 
     private Node<T> findMin(Node<T> node)
@@ -157,17 +95,45 @@ public class AvlTree<T extends Comparable<T>>
         return node;
     }
 
+    private Node<T> rotateNodes(Node<T> node)
+    {
+        int balanceFactor = getBalanceFactor(node);
+
+        if (balanceFactor > 1)
+        {
+            if (getBalanceFactor(node.left) < 0)
+            {
+                node.left = rotateLeft(node.left);
+            }
+            
+            return rotateRight(node);
+        }
+        else if (balanceFactor < -1)
+        {
+            if (getBalanceFactor(node.right) > 0)
+            {
+                node.right = rotateRight(node.right);
+            }
+            
+            return rotateLeft(node);
+        }
+
+        return node;
+    }
+
     private int getBalanceFactor(Node<T> node)
     {
         if (node == null)
         {
             return 0;
         }
-
-        return getHeight(node.left) - getHeight(node.right);
+        else
+        {
+            return getHeight(node.left) - getHeight(node.right);
+        }
     }
 
-    private Node<T> rightRotate(Node<T> node)
+    private Node<T> rotateRight(Node<T> node)
     {
         Node<T> leftNode = node.left;
         Node<T> rightNode = leftNode.right;
@@ -175,13 +141,13 @@ public class AvlTree<T extends Comparable<T>>
         leftNode.right = node;
         node.left = rightNode;
 
-        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
-        leftNode.height = 1 + Math.max(getHeight(leftNode.left), getHeight(leftNode.right));
+        updateHeight(node);
+        updateHeight(leftNode);
 
         return leftNode;
     }
 
-    private Node<T> leftRotate(Node<T> node)
+    private Node<T> rotateLeft(Node<T> node)
     {
         Node<T> rightNode = node.right;
         Node<T> leftNode = rightNode.left;
@@ -189,9 +155,24 @@ public class AvlTree<T extends Comparable<T>>
         rightNode.left = node;
         node.right = leftNode;
 
-        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
-        rightNode.height = 1 + Math.max(getHeight(rightNode.left), getHeight(rightNode.right));
+        updateHeight(node);
+        updateHeight(rightNode);
 
         return rightNode;
-    }   
+    }
+
+    private void updateHeight(Node<T> node)
+    {
+        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    }
+
+    int getHeight(Node<T> N)
+    {
+        if (N == null)
+        {
+            return -1;
+        }
+
+        return N.height;
+    }
 }
