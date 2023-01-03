@@ -7,7 +7,7 @@ public class AvlTree<T extends Comparable<T>>
         this.root = null;
     }
 
-    void print(Node<T> node)
+    public void print(Node<T> node)
     {
         if (node != null)
         {
@@ -19,7 +19,7 @@ public class AvlTree<T extends Comparable<T>>
         }
     }
 
-    Node<T> insert(Node<T> node, T data)
+    public Node<T> insert(Node<T> node, T data)
     {
         if (node == null)
         {
@@ -48,7 +48,7 @@ public class AvlTree<T extends Comparable<T>>
         return rotateNodes(node);
     }
 
-    Node<T> removeNode(Node<T> node, T data)
+    public Node<T> removeNode(Node<T> node, T data)
     {
         if (node == null)
         {
@@ -166,7 +166,7 @@ public class AvlTree<T extends Comparable<T>>
         node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
     }
 
-    int getHeight(Node<T> N)
+    public int getHeight(Node<T> N)
     {
         if (N == null)
         {
