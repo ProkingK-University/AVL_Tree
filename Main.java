@@ -5,25 +5,67 @@ public class Main
         /*AvlTree<Integer> tree = new AvlTree<>();
 
         tree.root = tree.insert(tree.root, 4);
-        System.out.println(tree.root.data);
-        tree.root = tree.insert(tree.root, 3);
-        System.out.println(tree.root.data);
-        tree.root = tree.insert(tree.root, 5);
-        System.out.println(tree.root.data);
         tree.root = tree.insert(tree.root, 2);
-        System.out.println(tree.root.data);
+        tree.root = tree.insert(tree.root, 6);
         tree.root = tree.insert(tree.root, 1);
-        System.out.println(tree.root.data);*/
-        /*tree.root = tree.insert(tree.root, 5);
+        tree.root = tree.insert(tree.root, 3);
+        tree.root = tree.insert(tree.root, 5);
         tree.root = tree.insert(tree.root, 7);
-        tree.root = tree.insert(tree.root, 8);
-        tree.root = tree.insert(tree.root, 9);
 
+        ThreadedAvlTree<Integer> threadedAvlTree = new ThreadedAvlTree<>();
+        threadedAvlTree.convertAVLtoThreaded(tree.root);
 
-        System.out.println(tree.root.data + " " + tree.root.height);*/
+        threadedAvlTree.print(threadedAvlTree.root);
+        System.out.println();
 
+        System.out.println(threadedAvlTree.root.left.left.right.data);
+        System.out.println(threadedAvlTree.root.left.right.right.data);
+        System.out.println(threadedAvlTree.root.right.left.right.data);
+        System.out.println(threadedAvlTree.root.right.right.right);
+        
+        threadedAvlTree.convertToNormalTree(threadedAvlTree.root);
+
+        System.out.println(threadedAvlTree.root.left.left.data);
+        System.out.println(threadedAvlTree.root.left.right.data);
+        System.out.println(threadedAvlTree.root.right.left.data);
+        System.out.println(threadedAvlTree.root.right.right.data);
+
+        threadedAvlTree.print(threadedAvlTree.root);
+        System.out.println();*/
 
         
+        
+        
+        
+        
+        
+        /*AvlTree<Integer> tree = new AvlTree<>();
+
+        tree.root = tree.insert(tree.root, 8);
+        tree.root = tree.insert(tree.root, 4);
+        tree.root = tree.insert(tree.root, 12);
+        tree.root = tree.insert(tree.root, 2);
+        tree.root = tree.insert(tree.root, 6);
+        tree.root = tree.insert(tree.root, 10);
+        tree.root = tree.insert(tree.root, 14);
+        tree.root = tree.insert(tree.root, 1);
+        tree.root = tree.insert(tree.root, 3);
+        tree.root = tree.insert(tree.root, 5);
+        tree.root = tree.insert(tree.root, 7);
+        tree.root = tree.insert(tree.root, 9);
+        tree.root = tree.insert(tree.root, 11);
+        tree.root = tree.insert(tree.root, 13);
+        tree.root = tree.insert(tree.root, 15);
+
+        ThreadedAvlTree<Integer> threadedAvlTree = new ThreadedAvlTree<>();
+        threadedAvlTree.convertAVLtoThreaded(tree.root);
+
+        System.out.println("Data: " + threadedAvlTree.root.left.left.left.data + " Data of parent: " + threadedAvlTree.root.left.left.left.right.data);
+        threadedAvlTree.print(threadedAvlTree.root);*/
+
+
+
+
         
         
         
@@ -76,6 +118,10 @@ public class Main
                 " of constructed threaded avl tree is : ");
         threadedAvlTree.print(threadedAvlTree.root);
         System.out.println("\nTree Height is: " + threadedAvlTree.getHeight(threadedAvlTree.root));
+
+        /*System.out.println(threadedAvlTree.root.left.left.right.data);
+        System.out.println(threadedAvlTree.root.left.right.data);
+        System.out.println(threadedAvlTree.root.right.left.right.data);*/
 
         threadedAvlTree.root = threadedAvlTree.insert(threadedAvlTree.root, 82);
         threadedAvlTree.root = threadedAvlTree.insert(threadedAvlTree.root, 91);

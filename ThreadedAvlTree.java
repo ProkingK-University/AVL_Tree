@@ -18,6 +18,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         return N.height;
     }
 
+    @SuppressWarnings("rawtypes")
     static Node getLeftMost(Node node)
     {
         while (node != null && node.left != null)
@@ -52,6 +53,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
 
     public void convertAVLtoThreaded(Node<T> node)
     {
+        root = node;
         convertToThreaded(node);
     }
 
@@ -109,7 +111,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                         currPtr = currPtr.left;
                     }
                 }
-                else
+                else if (data.compareTo(currPtr.data) > 0)
                 {
                     if (currPtr.right == null)
                     {
@@ -119,8 +121,9 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                     else if (currPtr.rightThread)
                     {
                         currPtr.right = new Node<T>(data);
-                        currPtr.right.right = currPtr.right;
+                        currPtr.right.right = currPtr;
                         currPtr.rightThread = false;
+                        currPtr.right.rightThread = true;
                         break;
                     }
                     else
@@ -128,13 +131,16 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                         currPtr = currPtr.right;
                     }
                 }
+                else
+                {
+                    return node;
+                }
             }
         }
 
         updateHeight(node);
-        rotateNodes(node);
 
-        return convertToThreaded(node);
+        return rotateNodes(node);
     }
 
     /**
@@ -145,11 +151,11 @@ public class ThreadedAvlTree<T extends Comparable<T>>
     {
         return null;
     }
-
-
-
+    
     private Node<T> rotateNodes(Node<T> node)
     {
+        convertToNormalTree(node);
+
         int balanceFactor = getBalanceFactor(node);
 
         if (balanceFactor > 1)
@@ -171,6 +177,8 @@ public class ThreadedAvlTree<T extends Comparable<T>>
             return rotateLeft(node);
         }
 
+        convertToThreaded(node);
+
         return node;
     }
 
@@ -191,7 +199,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         Node<T> leftNode = node.left;
         Node<T> rightNode = leftNode.right;
 
-        leftNode.right = node;
+        rightNode = node;
         node.left = rightNode;
 
         updateHeight(node);
@@ -205,7 +213,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         Node<T> rightNode = node.right;
         Node<T> leftNode = rightNode.left;
 
-        rightNode.left = node;
+        leftNode = node;
         node.right = leftNode;
 
         updateHeight(node);
@@ -217,5 +225,21 @@ public class ThreadedAvlTree<T extends Comparable<T>>
     private void updateHeight(Node<T> node)
     {
         node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    }
+
+    public void convertToNormalTree(Node<T> node)
+    {
+        if (node == null)
+        {
+            return;
+        }
+        else if (node.rightThread == true)
+        {
+            node.right = null;
+            node.rightThread = false;
+        }
+
+        convertToNormalTree(node.left);
+        convertToNormalTree(node.right);
     }
 }
