@@ -8,44 +8,33 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         this.root = null;
     }
 
-    int getHeight(Node<T> N)
+    public int getHeight(Node<T> node)
     {
-        if (N == null)
+        if (node == null)
         {
             return -1;
         }
 
-        return N.height;
-    }
-
-    @SuppressWarnings("rawtypes")
-    static Node getLeftMost(Node node)
-    {
-        while (node != null && node.left != null)
-        {
-            node = node.left;
-        }
-
-        return node;
+        return node.height;
     }
 
     void print(Node<T> node)
     {
         if (node != null)
         {
-            Node<T> cur = getLeftMost(node);
-    
-            while (cur != null)
+            Node<T> currPtr = getLeftMost(node);
+            
+            while (currPtr != null)
             {
-                System.out.print(cur.data + " ");
-    
-                if (cur.rightThread == true)
+                System.out.print(currPtr.data + " ");
+                
+                if (currPtr.rightThread == true)
                 {
-                    cur = cur.right;
+                    currPtr = currPtr.right;
                 }
                 else
                 {
-                    cur = getLeftMost(cur.right);
+                    currPtr = getLeftMost(currPtr.right);
                 }
             }
         }
@@ -141,7 +130,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
             }
         }
 
-        inOrderTraversal(node);
+        updateAllHeights(node);
 
         return rotateNodes(node);
     }
@@ -151,7 +140,6 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         Node<T> parent = null;
         Node<T> current = node;
 
-        // Find the node to be deleted
         while (current != null && current.data != data)
         {
             parent = current;
@@ -166,17 +154,14 @@ public class ThreadedAvlTree<T extends Comparable<T>>
             }
         }
 
-        // Node not found
         if (current == null)
         {
             return node;
         }
-        // Case 1: Node to be deleted has no children
         else if (current.left == null && current.right == null)
         {
             if (parent == null)
             {
-                // Node to be deleted is the root node
                 root = null;
             }
             else
@@ -191,13 +176,12 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                 }
             }
         }
-        // Case 2: Node to be deleted has one child
         else if (current.left == null || current.right == null)
         {
             Node<T> child = (current.left != null) ? current.left : current.right;
+
             if (parent == null)
             {
-                // Node to be deleted is the root node
                 root = child;
             }
             else
@@ -212,10 +196,8 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                 }
             }
         }
-        // Case 3: Node to be deleted has two children
         else
         {
-            // Find the inorder successor of the node to be deleted
             Node<T> inorderSuccessor = current.right;
 
             while (inorderSuccessor.left != null)
@@ -223,14 +205,11 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                 inorderSuccessor = inorderSuccessor.left;
             }
 
-            // Swap the data of the inorder successor with the data of the node to be deleted
             current.data = inorderSuccessor.data;
-
-            // Delete the inorder successor
             removeNode(node, inorderSuccessor.data);
         }
 
-        inOrderTraversal(node);
+        updateAllHeights(node);
 
         return rotateNodes(node);
     }
@@ -333,20 +312,26 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         convertToNormalTree(node.right);
     }
 
-    public int height(Node<T> node) {
-        if (node == null) {
-            return 0;
+    public int height(Node<T> node)
+    {
+        if (node == null)
+        {
+            return -1;
         }
-        int height = -1;
-        Node<T> current = node;
-        while (current != null) {
-            height++;
-            current = current.right;
+        else
+        {
+            if (node.rightThread == true)
+            {
+                return 1 + Math.max(height(node.left), height(null));
+            }
+            else
+            {
+                return 1 + Math.max(height(node.left), height(node.right));
+            }
         }
-        return height;
     }
     
-    public void inOrderTraversal(Node<T> node)
+    public void updateAllHeights(Node<T> node)
     {
         if (node != null)
         {
@@ -366,5 +351,16 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                 }
             }
         }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static Node getLeftMost(Node node)
+    {
+        while (node != null && node.left != null)
+        {
+            node = node.left;
+        }
+
+        return node;
     }
 }
