@@ -37,7 +37,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
     
             while (cur != null)
             {
-                System.out.print(" " + cur.data + " ");
+                System.out.print(cur.data + " ");
     
                 if (cur.rightThread == true)
                 {
@@ -93,6 +93,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
         }
         else
         {
+            Node<T> prevPtr = null;
             Node<T> currPtr = node;
 
             while (true)
@@ -108,6 +109,7 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                     }
                     else
                     {
+                        prevPtr = currPtr;
                         currPtr = currPtr.left;
                     }
                 }
@@ -121,13 +123,14 @@ public class ThreadedAvlTree<T extends Comparable<T>>
                     else if (currPtr.rightThread)
                     {
                         currPtr.right = new Node<T>(data);
-                        currPtr.right.right = currPtr;
+                        currPtr.right.right = prevPtr;
                         currPtr.rightThread = false;
                         currPtr.right.rightThread = true;
                         break;
                     }
                     else
                     {
+                        prevPtr = currPtr;
                         currPtr = currPtr.right;
                     }
                 }
@@ -138,18 +141,98 @@ public class ThreadedAvlTree<T extends Comparable<T>>
             }
         }
 
-        updateHeight(node);
+        inOrderTraversal(node);
 
         return rotateNodes(node);
     }
 
-    /**
-     * Delete the given element \texttt{data} from the tree.  Re-balance the tree after deletion.
-     * If the data is not in the tree, return the given node / root.
-     */
-    Node<T> removeNode(Node<T> root, T data)
+    Node<T> removeNode(Node<T> node, T data)
     {
-        return null;
+        Node<T> parent = null;
+        Node<T> current = node;
+
+        // Find the node to be deleted
+        while (current != null && current.data != data)
+        {
+            parent = current;
+
+            if (data.compareTo(current.data) < 0)
+            {
+                current = current.left;
+            }
+            else
+            {
+                current = current.right;
+            }
+        }
+
+        // Node not found
+        if (current == null)
+        {
+            return node;
+        }
+        // Case 1: Node to be deleted has no children
+        else if (current.left == null && current.right == null)
+        {
+            if (parent == null)
+            {
+                // Node to be deleted is the root node
+                root = null;
+            }
+            else
+            {
+                if (parent.left == current)
+                {
+                    parent.left = null;
+                }
+                else
+                {
+                    parent.right = null;
+                }
+            }
+        }
+        // Case 2: Node to be deleted has one child
+        else if (current.left == null || current.right == null)
+        {
+            Node<T> child = (current.left != null) ? current.left : current.right;
+            if (parent == null)
+            {
+                // Node to be deleted is the root node
+                root = child;
+            }
+            else
+            {
+                if (parent.left == current)
+                {
+                    parent.left = child;
+                }
+                else
+                {
+                    parent.right = child;
+                }
+            }
+        }
+        // Case 3: Node to be deleted has two children
+        else
+        {
+            // Find the inorder successor of the node to be deleted
+            Node<T> inorderSuccessor = current.right;
+
+            while (inorderSuccessor.left != null)
+            {
+                inorderSuccessor = inorderSuccessor.left;
+            }
+
+            // Swap the data of the inorder successor with the data of the node to be deleted
+            current.data = inorderSuccessor.data;
+
+            // Delete the inorder successor
+            removeNode(node, inorderSuccessor.data);
+        }
+
+        inOrderTraversal(node);
+
+        return rotateNodes(node);
     }
     
     private Node<T> rotateNodes(Node<T> node)
@@ -224,7 +307,14 @@ public class ThreadedAvlTree<T extends Comparable<T>>
 
     private void updateHeight(Node<T> node)
     {
-        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        if (node.rightThread == true)
+        {
+            node.height = 1 + Math.max(getHeight(node.left), -1);
+        }
+        else
+        {
+            node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        }
     }
 
     public void convertToNormalTree(Node<T> node)
@@ -241,5 +331,40 @@ public class ThreadedAvlTree<T extends Comparable<T>>
 
         convertToNormalTree(node.left);
         convertToNormalTree(node.right);
+    }
+
+    public int height(Node<T> node) {
+        if (node == null) {
+            return 0;
+        }
+        int height = -1;
+        Node<T> current = node;
+        while (current != null) {
+            height++;
+            current = current.right;
+        }
+        return height;
+    }
+    
+    public void inOrderTraversal(Node<T> node)
+    {
+        if (node != null)
+        {
+            Node<T> currPtr = getLeftMost(node);
+    
+            while (currPtr != null)
+            {
+                currPtr.height = height(node);
+    
+                if (currPtr.rightThread == true)
+                {
+                    currPtr = currPtr.right;
+                }
+                else
+                {
+                    currPtr = getLeftMost(currPtr.right);
+                }
+            }
+        }
     }
 }
